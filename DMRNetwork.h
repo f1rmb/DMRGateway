@@ -60,6 +60,8 @@ public:
 	void close(bool sayGoodbye = true);
 
 private:
+	std::string      m_address;
+	unsigned int     m_port;
 	sockaddr_storage m_addr;
 	unsigned int     m_addrLen;
 	uint8_t*         m_id;
