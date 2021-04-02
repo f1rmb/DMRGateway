@@ -32,8 +32,6 @@ const unsigned int HOMEBREW_DATA_PACKET_LENGTH = 55U;
 
 
 CDMRNetwork::CDMRNetwork(const std::string& address, unsigned int port, unsigned int local, unsigned int id, const std::string& password, const std::string& name, bool location, bool debug) :
-m_address(address),
-m_port(port),
 m_addr(),
 m_addrLen(0U),
 m_id(NULL),
@@ -58,6 +56,9 @@ m_beacon(false)
 	assert(port > 0U);
 	assert(id > 1000U);
 	assert(!password.empty());
+
+	if (CUDPSocket::lookup(address, port, m_addr, m_addrLen) != 0)
+		m_addrLen = 0U;
 
 	m_buffer   = new unsigned char[BUFFER_LENGTH];
 	m_salt     = new unsigned char[sizeof(uint32_t)];
@@ -94,9 +95,6 @@ void CDMRNetwork::setConfig(const unsigned char* data, unsigned int len)
 
 bool CDMRNetwork::open()
 {
-	if (CUDPSocket::lookup(m_address, m_port, m_addr, m_addrLen) != 0)
-		m_addrLen = 0U;
-
 	if (m_addrLen == 0U) {
 		LogError("%s, Could not lookup the address of the master", m_name.c_str());
 		return false;
